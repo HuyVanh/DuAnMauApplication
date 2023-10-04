@@ -24,8 +24,12 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import huydqph30165.fpoly.duanmauapplication.Fragment.QLThanhVienFragment;
 import huydqph30165.fpoly.duanmauapplication.Fragment.QlLoaiSachFragment;
 import huydqph30165.fpoly.duanmauapplication.Fragment.QlPhieuMuonFragment;
+import huydqph30165.fpoly.duanmauapplication.Fragment.QlSachFragment;
+import huydqph30165.fpoly.duanmauapplication.Fragment.ThongKeDanhThuFragment;
+import huydqph30165.fpoly.duanmauapplication.Fragment.ThongKeTop10Fragment;
 import huydqph30165.fpoly.duanmauapplication.dao.SachDao;
 import huydqph30165.fpoly.duanmauapplication.dao.ThuThuDao;
 
@@ -60,6 +64,14 @@ public class MainActivity extends AppCompatActivity {
                    startActivity(intent);
                } else if (item.getItemId()==R.id.mDoiMatKhau) {
                    showDialogDoiMatKhau();
+               } else if (item.getItemId()==R.id.mTop10) {
+                   fragment = new ThongKeTop10Fragment();
+               } else if (item.getItemId()==R.id.mDoanhThu) {
+                   fragment = new ThongKeDanhThuFragment();
+               } else if (item.getItemId() == R.id.mQLThanhVien) {
+                   fragment = new QLThanhVienFragment();
+               } else if (item.getItemId()==R.id.mQLSach) {
+                   fragment = new QlSachFragment();
                }
 
                if (fragment!= null){
@@ -117,8 +129,6 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(MainActivity.this, DangNhapActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
-
-
                         }else if (check == 0){
                             Toast.makeText(MainActivity.this, "Mật Khẩu cũ không đúng", Toast.LENGTH_SHORT).show();
                         }else {

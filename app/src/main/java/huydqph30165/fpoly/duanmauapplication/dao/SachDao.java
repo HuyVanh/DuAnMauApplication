@@ -20,13 +20,14 @@ public class SachDao {
     public ArrayList<Sach>getDSDauSach(){
         ArrayList<Sach>list = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = dbHelper.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM SACH", null);
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT sc.masach, sc.tensach, sc.giathue, sc.maloai, lo.tenloai FROM SACH sc, LOAISACH lo WHERE sc.maloai = lo.maloai", null);
         if (cursor.getCount()!= 0){
             cursor.moveToFirst();
             do {
-                list.add(new Sach(cursor.getInt(0), cursor.getString(1), cursor.getInt(2),cursor.getInt(3)));
+                list.add(new Sach(cursor.getInt(0), cursor.getString(1), cursor.getInt(2),cursor.getInt(3),cursor.getString(4)));
             }while (cursor.moveToNext());
         }
+
         return list;
     }
 }
