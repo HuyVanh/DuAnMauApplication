@@ -1,9 +1,15 @@
 package huydqph30165.fpoly.duanmauapplication.Fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,26 +17,103 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 import huydqph30165.fpoly.duanmauapplication.Adapter.SachAdapter;
 import huydqph30165.fpoly.duanmauapplication.R;
+import huydqph30165.fpoly.duanmauapplication.dao.LoaiSachDao;
 import huydqph30165.fpoly.duanmauapplication.dao.SachDao;
+import huydqph30165.fpoly.duanmauapplication.model.Loaisach;
 import huydqph30165.fpoly.duanmauapplication.model.Sach;
 
 public class QlSachFragment extends Fragment {
+    SachDao sachDao;
+    RecyclerView recyclerView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_qlsach,container,false);
-        RecyclerView recyclerView = view.findViewById(R.id.recycleSach);
-        SachDao sachDao = new SachDao(getContext());
+        recyclerView = view.findViewById(R.id.recycleSach);
+        sachDao = new SachDao(getContext());
+        loadData();
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.floatAdd);
 
+
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+        return view;
+    }
+    private void loadData(){
         ArrayList<Sach> list = sachDao.getDSDauSach();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        SachAdapter sachAdapter = new SachAdapter(getContext(), list);
+        SachAdapter sachAdapter = new SachAdapter(getContext(), list, getDanhSachLoaiSach(), sachDao);
         recyclerView.setAdapter(sachAdapter);
-        return view;
+    }
+    private void showDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_themsach, null);
+        builder.setView(view);
+
+        EditText edtTenSach = view.findViewById(R.id.edtTenSach);
+        EditText edtTien = view.findViewById(R.id.edtTien);
+        Spinner spnLoaiSach = view.findViewById(R.id.splLoaiSach);
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), getDanhSachLoaiSach(), android.R.layout.simple_list_item_1, new String[]{"tenloai"}, new int[]{android.R.id.text1});
+        spnLoaiSach.setAdapter(simpleAdapter);
+
+        builder.setNegativeButton("Thêm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                    String tensach = edtTenSach.getText().toString();
+                    int tien = Integer.parseInt(edtTien.getText().toString());
+                    HashMap<String, Object>hs = (HashMap<String, Object>) spnLoaiSach.getSelectedItem();
+                    int maloai = (int) hs.get("maloai");
+
+                boolean check = sachDao.themSachMoi(tensach, tien, maloai);
+                if (check){
+                    Toast.makeText(getContext(), "Thêm sách thành công", Toast.LENGTH_SHORT).show();
+                    loadData();
+                }else {
+                    Toast.makeText(getContext(), "Thêm sách không thành công", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+    private ArrayList<HashMap<String , Object>>getDanhSachLoaiSach(){
+        LoaiSachDao loaiSachDao = new LoaiSachDao(getContext());
+        ArrayList<Loaisach> list = loaiSachDao.getDanhSachLoaiSach();
+        ArrayList<HashMap<String, Object>>listHM = new ArrayList<>();
+
+        for (Loaisach loai: list){
+            HashMap<String, Object>hs = new HashMap<>();
+            hs.put("maloai", loai.getId());
+            hs.put("tenloai", loai.getTenloai());
+            listHM.add(hs);
+        }
+
+        return listHM;
     }
 }

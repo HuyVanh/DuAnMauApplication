@@ -10,9 +10,9 @@
         android:layout_height="100dp"
         android:src="@mipmap/ic_launcher"/>
     <TextView
-        android:textSize="25dp"
+        android:id="@+id/txtTen"
+        android:textSize="20dp"
         android:textColor="#D32F2F"
-        android:text="Xin Chào Đặng Quang Huy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

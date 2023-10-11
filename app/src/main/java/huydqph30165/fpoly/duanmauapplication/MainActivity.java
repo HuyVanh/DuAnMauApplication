@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout frameLayout = findViewById(R.id.farmLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
         drawerLayout = findViewById(R.id.drawerLayout);
+        View headerLayout = navigationView.getHeaderView(0);
+        TextView txtTen = headerLayout.findViewById(R.id.txtTen);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -73,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                } else if (item.getItemId()==R.id.mQLSach) {
                    fragment = new QlSachFragment();
                }
-
                if (fragment!= null){
                    FragmentManager fragmentManager = getSupportFragmentManager();
                    fragmentManager.beginTransaction().replace(R.id.farmLayout, fragment).commit();
@@ -87,6 +89,16 @@ public class MainActivity extends AppCompatActivity {
                return false;
            }
        });
+       SharedPreferences sharedPreferences = getSharedPreferences("THONGTIN", MODE_PRIVATE);
+       String loaiTk = sharedPreferences.getString("loaitaikhoan", "");
+       if (!loaiTk.equals("Admin")){
+           Menu menu = navigationView.getMenu();
+           menu.findItem(R.id.mDoanhThu).setVisible(false);
+           menu.findItem(R.id.mTop10).setVisible(false);
+       }
+        String hoten = sharedPreferences.getString("hoten", "");
+        txtTen.setText("Xin chào" + hoten);
+
     }
 
     @Override

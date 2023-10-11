@@ -1,5 +1,6 @@
 package huydqph30165.fpoly.duanmauapplication.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,5 +30,39 @@ public class SachDao {
         }
 
         return list;
+    }
+    public boolean themSachMoi(String tensach, int giatien, int maloai){
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("tensach", tensach);
+        contentValues.put("giathue", giatien);
+        contentValues.put("maloai", maloai);
+        long check = sqLiteDatabase.insert("SACH", null, contentValues);
+        if (check == -1)
+            return false;
+        return true;
+    }
+    public boolean capNhapThongTinSach(int masach, String tensach, int giathue, int maloai){
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("tensach", tensach);
+        contentValues.put("giathue", giathue);
+        contentValues.put("maloai", maloai);
+        long check = sqLiteDatabase.update("SACH", contentValues, "masach = ?", new String[]{String.valueOf(masach)});
+        if (check == -1)
+            return false;
+        return true;
+    }
+    public int xoaSach(int masach){
+        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM PHIEUMUON WHERE masach = ?", new String[]{String.valueOf(masach)});
+        if (cursor.getCount() != 0){
+            return -1;
+
+        }
+        long check = sqLiteDatabase.delete("SACH", "masach = ?", new String[]{String.valueOf(masach)});
+        if (check == -1)
+            return 0;
+        return 1;
     }
 }

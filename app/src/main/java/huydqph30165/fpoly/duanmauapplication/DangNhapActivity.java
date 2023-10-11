@@ -30,10 +30,6 @@ public class DangNhapActivity extends AppCompatActivity {
                 String user = edtUser.getText().toString();
                 String pass = edtPass.getText().toString();
                 if (thuThuDao.checkDangNhap(user, pass)){
-                    SharedPreferences sharedPreferences = getSharedPreferences("THONGTIN", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("matt", user);
-                    editor.commit();
                     startActivity(new Intent(DangNhapActivity.this, MainActivity.class));
                 }else {
                     Toast.makeText(DangNhapActivity.this, "Tài khoản và mật khẩu không đúng", Toast.LENGTH_SHORT).show();
